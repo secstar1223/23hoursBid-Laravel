@@ -10,17 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('team_invitations', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->foreignId('team_id')->constrained()->cascadeOnDelete();
+            $table->string('email');
+            $table->enum('role',\Config::get('constants.roles'))->default('editor');
             $table->string('hash')->nullable();
-            $table->rememberToken();
-            $table->foreignId('current_team_id');
-            $table->string('profile_photo_path', 2048)->nullable();
             $table->timestamps();
+            $table->unique(['team_id', 'email']);
         });
     }
 
@@ -29,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('team_invitations');
     }
 };

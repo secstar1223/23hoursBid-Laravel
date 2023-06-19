@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, JWTSubject
 {
     use HasApiTokens;
     use HasFactory;
@@ -20,7 +22,12 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', 'email', 'hash', 'password',
+        'name',
+        'email',
+        'hash',
+        'password',
+        'current_team_id',
+        'profile_photo_path',
     ];
 
     /**
@@ -43,9 +50,26 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The accessors to append to the model's array form.
+     * Get the identifier that will be stored in the subject claim of the JWT.
      *
-     * @var array<int, string>
+     * @return mixed
      */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Teams::class);
+    }
 
 }

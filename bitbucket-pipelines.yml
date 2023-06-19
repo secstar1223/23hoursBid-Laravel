@@ -4,13 +4,13 @@ pipelines:
   branches:
     dev:
       - step:
-          name: 'Deploying staging'
+          name: "Deploying staging"
           deployment: staging
           script:
-            - ssh booking@bookings247.co 'cd /home/booking/backend-dev && git pull && composer install && git reset --hard'
+            - ssh booking@bookings247.co 'cd /home/booking/backend-dev && git pull && composer install --optimize-autoloader --no-dev && git reset --hard'
     production:
       - step:
-          name: 'Deploying production'
+          name: "Deploying production"
           deployment: production
           script:
-            - ssh booking@bookings247.co 'cd /home/booking/backend && git pull && composer install && git reset --hard'
+            - ssh booking@bookings247.co 'cd /home/booking/backend && git pull && composer install --optimize-autoloader --no-dev && git reset --hard'

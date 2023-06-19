@@ -3,126 +3,76 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\BaseController as BaseController;
+use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Models\Asset;
-use Validator;
+use Carbon\Carbon;
 
 class AssetController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $user = auth()->user();
-        $success['user'] = $user;
-        return $this->sendResponse($success, 'Assets retrieved successfully.');
+        $success['assets'] = Asset::where('team_id', $user->current_team_id)->get();
+        return $this->sendResponse($success, null);
     }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        $input = $request->all();
-
-        $teamId = auth()->user()->current_team_id;
-
-        $asset = new Asset();
-        $asset->name = $input['name'];
-        $asset->amount = $input['amount'];
-        $asset->resource_tracking = $input['resource_tracking'];
-        $asset->team_id = $teamId;
-        $asset->save();
-
-        return $this->sendResponse('$asset', 'Asset created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $product = Product::find($id);
-
-        if (is_null($product)) {
-            return $this->sendError('Product not found.');
-        }
-
-        return $this->sendResponse(new ProductResource($product), 'Product retrieved successfully.');
-    }
-
-    public function edit($id)
-    {
-        $asset = Asset::find($id);
-
-        if (is_null($asset)) {
-            return $this->sendError('Asset not found.');
-        }
-
-        return $this->sendResponse($asset, 'Asset retrieved successfully.');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Asset $asset)
-    {
-        $input = $request->all();
-
         $user = auth()->user();
-        $teamId = $user->current_team_id;
+        $newAsset = new Asset();
+        $newAsset->name = $request->name;
+        $newAsset->amount = $request->amount;
+        $newAsset->resource_tracking = $request->resource_tracking;
+        $newAsset->team_id = $user->current_team_id;
+        $newAsset->save();
+        $responseMessage = "Asset created successfully.";
+        return $this->sendResponse([], $responseMessage);
+    }
 
-        $assetsQuery = Asset::query()->where('team_id', $teamId);
-    	$currentAsset = $assetsQuery->find($asset->id);
-
-        if (!$currentAsset) {
-
-            return this->sendError('error' , 'The specified asset does not exist or is not associated with the current team.');
+    public function getById($id)
+    {
+        $asset = Asset::whereId($id)->get()->first();
+        if (!$asset) {
+            $responseMessage = "The specified Asset does not exist or is not associated with the current team.";
+            return $this->sendError($responseMessage, 500);
         }
+        $success['asset'] = $asset;
+        return $this->sendResponse($success, null);
+    }
 
-        $currentAsset->name = $input['name'];
-        $currentAsset->amount = $input['amount'];
-        $currentAsset->resource_tracking = $input['resource_tracking'];
+
+    public function update(Request $request, $id)
+    {
+        $currentAsset = Asset::find($id);
+        if (!$currentAsset) {
+            $responseMessage = 'The specified Asset does not exist or is not associated with the current team.';
+            return $this->sendError($responseMessage, 500);
+        }
+        Asset::whereId($id)->update([
+            'name' => $request->name,
+            'amount' => $request->amount,
+            'resource_tracking' => $request->resource_tracking,
+        ]);
+
+        $currentAsset->name = $request->name;
+        $currentAsset->amount = $request->amount;
+        $currentAsset->resource_tracking = $request->resource_tracking;
         $currentAsset->save();
-
-        return $this->sendResponse($currentAsset, 'Current Asset updated successfully.');
+        $success['assets'] = $currentAsset;
+        $responseMessage = "Current Asset updated successfully.";
+        return $this->sendResponse($success, $responseMessage);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Asset $asset)
+    public function destroy($id)
     {
-        $user = auth()->user();
-        $team = $user->current_team_id;
-
-        $assetsQuery = Asset::query()->where('team_id', $team);
-    	$currentAsset = $assetsQuery->find($asset->id);
-
-        if (!$currentAsset) {
-            return this->sendError('error', 'The specified asset does not exist or is not associated with the current team.');
+        $ids = explode(",", $id);
+        $deleteAsset = Asset::whereIn('id', $ids)->delete();
+        if ($deleteAsset == 0) {
+            $responseMessage = 'The specified Asset does not exist or is not associated with the current team.';
+            return $this->sendError($responseMessage, 500);
         }
-
-        try {
-            $asset->delete();
-        } catch (\Exception $e) {
-            return this->sendError('error', 'Unable to delete asset.');
-        }
-        return $this->sendResponse([], 'Asset deleted successfully.');
+        $responseMessage = "Asset deleted successfully.";
+        return $this->sendResponse([], $responseMessage);
     }
+
 }
