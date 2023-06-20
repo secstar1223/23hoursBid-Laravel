@@ -1,0 +1,84 @@
+
+.as-remove-right{
+    position: absolute;
+    right: -20px;
+    top: -5px;
+}
+
+.as-remove-left{
+    position: absolute;
+    left: -20px;
+    top: -5px;
+}
+
+.as-message-time{
+    position: absolute;
+    bottom: -20px;
+}
+
+.page-item.active .page-link {
+    background-color: #64af22;
+    border-color: #64af22;
+}
+
+.page-link {
+    color: #64af22;
+}
+
+.btn-outline-primary {
+    border-color: #64af22;
+    color: #64af22;
+}
+.primary {
+    color: #64af22 !important;
+}
+
+.as-header-title{
+    font-weight: bolder;
+    color: #5e5e5e;
+    font-size: 20px;
+    margin: 0;
+    padding: 8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

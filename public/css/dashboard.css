@@ -1,0 +1,140 @@
+.form-wizard .form-wizard-steps li {
+    width: 33%;
+}
+
+.collapse-content{
+    max-height: 0px;
+    overflow-y: hidden;
+}
+
+.la-ongoing-projects .wt-dashboardboxcontent {
+    min-height: 150px !important;
+}
+
+.col-md-4.middle-content {
+    display: none !important;
+}
+
+@media (max-width: 992px) {
+    table.table th, table.table td {
+        display: revert;
+        padding: 3px 0px !important;
+        width: 12%;
+        min-width: 90px;
+    }
+}
+
+.middle-content, .middle-content > .row, .middle-content > .row > div {
+    display: initial !important;
+}
+.collapsible {
+    background-color: #fff;
+    color: #558732;
+    border: 0px;
+    border-bottom: 1px solid #f5f1f1;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.active, .collapsible:hover {
+    /*background-color: rgba(167, 236, 69, 0.43);*/
+}
+
+.collapsible:after {
+    content: '\002B';
+    color: #558732;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.active:after {
+    content: "\2212";
+}
+
+.fa, .icon-calendar, .icon-android-folder, .icon-android-contact, .icon-bookmark {
+    transform: none !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
